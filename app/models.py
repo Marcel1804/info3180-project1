@@ -13,12 +13,20 @@ class UserProfile(db.Model):
     first_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80))
     username = db.Column(db.String(80), unique=True)
+    gender=db.Column(db.String(80))
+    location=db.Column(db.String(80))
+    email=db.Column(db.String(80))
+    bio=db.Column(db.String(255))
     password = db.Column(db.String(255))
 
-    def __init__(self, first_name, last_name, username, password):
+    def __init__(self, first_name, last_name, username, gender, location, email, bio, password):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
+        self.gender=gender
+        self.location=location
+        self.email=email
+        self.bio=bio
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
     def is_authenticated(self):
