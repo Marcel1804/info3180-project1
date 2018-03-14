@@ -4,13 +4,12 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
-from app import app, db, login_manager
+import os
+from app import app, db 
 from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm
+from forms import AddProfileForm 
 from models import UserProfile
-from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 
 ###
 # Routing for your application.
@@ -28,75 +27,45 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Akeam Williams")
     
-@app.route('/profile')
+@app.route('/profile', methods=['POST','GET'])
 def profile():
     """Render the website's Add Profile page."""
-    return render_template('profile.html')
+    form=AddProfileForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        fname = form.firstname.data
+        lname = form.lastname.data
+        username= fname+","+lname
+        gender = form.gender.data
+        email = form.email.data
+        location = form.location.data
+        bio=form.bio.data
+        photo=form.photo.data
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        photo=photo.filename
+        
+        user = UserProfile.query.filter_by(username=username).first()
+        if user is None :
+            user=UserProfile(first_name=fname,last_name=lname, gender=gender, location=location, email=email, bio=bio, photo=photo)
+            db.session.add(user)
+            db.session.commit()
+            flash('Profile was successfully added.', 'success')
+            return redirect(url_for('profile'))
+        elif user is not None:
+            flash("already a member", 'danger')
+
+    flash_errors(form)
+    return render_template('profile.html',form=form)
+
+@app.route('/profiles')
+def profiles():
+    """Render the website Profiles page"""
+    return render_template('profiles.html')
 
 @app.route('/secure-page')
-@login_required
 def secure_page():
     """Render a secure page on our website that only logged in users can access."""
     return render_template('secure_page.html')
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        # if user is already logged in, just redirect them to our secure page
-        # or some other page like a dashboard
-        return redirect(url_for('secure_page'))
-
-    # Here we use a class of some kind to represent and validate our
-    # client-side form data. For example, WTForms is a library that will
-    # handle this for us, and we use a custom LoginForm to validate.
-    form = LoginForm()
-    # Login and validate the user.
-    if request.method == 'POST' and form.validate_on_submit():
-        # Query our database to see if the username and password entered
-        # match a user that is in the database.
-        username = form.username.data
-        password = form.password.data
-
-        # user = UserProfile.query.filter_by(username=username, password=password)\
-        # .first()
-        # or
-        user = UserProfile.query.filter_by(username=username).first()
-
-        if user is not None and check_password_hash(user.password, password):
-            remember_me = False
-
-            if 'remember_me' in request.form:
-                remember_me = True
-
-            # If the user is not blank, meaning if a user was actually found,
-            # then login the user and create the user session.
-            # user should be an instance of your `User` class
-            login_user(user, remember=remember_me)
-
-            flash('Logged in successfully.', 'success')
-
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('home'))
-        else:
-            flash('Username or Password is incorrect.', 'danger')
-
-    flash_errors(form)
-    return render_template('login.html', form=form)
-
-
-@app.route("/logout")
-@login_required
-def logout():
-    # Logout the user and end the session
-    logout_user()
-    flash('You have been logged out.', 'danger')
-    return redirect(url_for('home'))
-
-
-@login_manager.user_loader
-def load_user(id):
-    return UserProfile.query.get(int(id))
 
 
 # Flash errors from the form if validation fails
