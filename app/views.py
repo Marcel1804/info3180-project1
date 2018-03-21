@@ -5,9 +5,10 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import os
+import datetime
 from app import app, db 
 from flask import render_template, request, redirect, url_for, flash
-from forms import AddProfileForm, UserForm 
+from forms import AddProfileForm
 from models import UserProfile
 from werkzeug.utils import secure_filename
 
@@ -31,6 +32,8 @@ def about():
 def profile():
     """Render the website's Add Profile page."""
     form=AddProfileForm()
+    now = datetime.datetime.now()
+    
     if request.method == 'POST' and form.validate_on_submit():
         fname = form.firstname.data
         lname = form.lastname.data
@@ -43,10 +46,11 @@ def profile():
         filename = secure_filename(photo.filename)
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         photo=photo.filename
+        date=now.strftime("%B %d, %Y")
         
         user = UserProfile.query.filter_by(username=username).first()
         if user is None :
-            user=UserProfile(first_name=fname,last_name=lname, gender=gender, location=location, email=email, bio=bio, photo=photo)
+            user=UserProfile(first_name=fname,last_name=lname, gender=gender, location=location, email=email, bio=bio, photo=photo, date=date)
             db.session.add(user)
             db.session.commit()
             flash('Profile was successfully added.', 'success')
@@ -60,9 +64,8 @@ def profile():
 @app.route('/profiles',methods=['POST','GET'])
 def profiles():
     """Render the website Profiles page"""
-    form=UserForm()
+    form=AddProfileForm()
     User= UserProfile.query.order_by(UserProfile.last_name).all()
-        
     return render_template('profiles.html',user=User,form=form)
     
 @app.route('/profile/<userid>')

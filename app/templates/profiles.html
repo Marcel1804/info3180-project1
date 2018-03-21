@@ -13,9 +13,9 @@
 
   <div class="se">
     <h5>{{u.first_name}}&nbsp{{u.last_name}}</h5>
-    {{u.gender}}
+    <img src="{{url_for('static',filename='uploads/pic/pic2.png')}}" alt="profile icon" style="width:12px;height:12px">{{u.gender}}
     <br>
-    {{u.location}}
+    <img src="{{url_for('static',filename='uploads/pic/pic3.png')}}" alt="location icon" style="width:12px;height:12px">{{u.location}}
    </div>
  <div class="see">
       <a href="{{ url_for('userid', userid=u.id) }}" class="btn btn-primary but">View Profile</a> 
