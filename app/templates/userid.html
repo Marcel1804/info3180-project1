@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<div class="en">
+    <br>
+    <div class="s1">
+         <img src="{{url_for('static',filename='uploads/'+u.photo)}}" alt="profile picture" style="width:140px;height:140px;padding-bottom:10px;padding-right:10px;">
+    </div>
+
+   <div class="se1">
+    <h5>{{u.first_name}}&nbsp{{u.last_name}}</h5>
+    {{u.email}}
+    <br>
+    {{u.location}}
+    <br>
+    Joined on 
+   </div>
+    <br>
+    <br>
+    <div class="l1">
+    <h6>About Me</h6>
+     {{u.bio}}
+     <br>
+     <br>
+      <button type="submit" name="submit" class="btn btn-primary but">Send Message</button>
+      &nbsp&nbsp&nbsp&nbsp
+      <button type="submit"  class="btn btn-primary but1">Follow</button>
+     </div>
+      <br>
+      
+ </div>
+ 
+
+{%endblock %}

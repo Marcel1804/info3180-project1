@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h1> Profiles</h1>
+<h1 class="center"> Profiles</h1>
 
+{% for u in user %}
+<div class="en">
+<br>
 
+<div class="s">
+     <img src="{{url_for('static',filename='uploads/'+u.photo)}}" alt="profile picture" style="width:100px;height:100px;padding-bottom:10px;padding-right:10px;">
+</div>
+
+  <div class="se">
+    <h5>{{u.first_name}}&nbsp{{u.last_name}}</h5>
+    {{u.gender}}
+    <br>
+    {{u.location}}
+   </div>
+ <div class="see">
+      <a href="{{ url_for('userid', userid=u.id) }}" class="btn btn-primary but">View Profile</a> 
+ </div>
+ </div>
+ <br>
+{%endfor%}
 {%endblock %}

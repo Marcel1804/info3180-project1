@@ -7,7 +7,7 @@ This file creates your application.
 import os
 from app import app, db 
 from flask import render_template, request, redirect, url_for, flash
-from forms import AddProfileForm 
+from forms import AddProfileForm, UserForm 
 from models import UserProfile
 from werkzeug.utils import secure_filename
 
@@ -57,10 +57,19 @@ def profile():
     flash_errors(form)
     return render_template('profile.html',form=form)
 
-@app.route('/profiles')
+@app.route('/profiles',methods=['POST','GET'])
 def profiles():
     """Render the website Profiles page"""
-    return render_template('profiles.html')
+    form=UserForm()
+    User= UserProfile.query.order_by(UserProfile.last_name).all()
+        
+    return render_template('profiles.html',user=User,form=form)
+    
+@app.route('/profile/<userid>')
+def userid(userid):
+    user =UserProfile.query.filter_by(id=userid).first()
+    return render_template('userid.html',u=user)
+    
 
 @app.route('/secure-page')
 def secure_page():

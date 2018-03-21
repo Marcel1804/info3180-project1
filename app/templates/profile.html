@@ -1,45 +1,49 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h1>Add Profile</h1>
+<h1 class="center">Add Profile</h1>
  {% include 'flash_messages.html' %}
-    
+ <br>
+ <div class="en">   
+ <br>
 <form action="{{url_for('profile')}}" method="POST"  enctype="multipart/form-data">
  {{ form.csrf_token }}
-      <div class="form-group">
+     <div>
+      <div class="form-group l">
         {{ form.firstname.label }}
         {{ form.firstname(class='form-control', placeholder="Enter your firstname") }}
       </div>
-      <div class="form-group">
+      <div class="form-group l">
         {{ form.lastname.label }}
         {{ form.lastname(class='form-control', placeholder="Enter your lastname") }}
       </div>
-      <div class="form-group">
+      <div class="form-group l">
         {{ form.gender.label }}
         {{ form.gender(class='form-control', placeholder="Enter your Gender") }}
       </div>
-      <div class="form-group">
+      <div class="form-group l">
         {{ form.email.label }}
         {{ form.email(class='form-control', placeholder="Enter your email") }}
       </div>
-      <div class="form-group">
+      <div class="form-group l">
         {{ form.location.label }}
         {{ form.location(class='form-control', placeholder="kingston, jamaica") }}
       </div>
-      <div class="form-group">
+      <div class="form-group l">
         {{ form.bio.label }}
         {{ form.bio(class='form-control', placeholder="Enter your biography") }}
       </div>
-      <div>
+      <div class="l">
         {{form.photo.label}}
         <br>
         {{form.photo}}
       </div>
       <br>
-      <div>
-      <button type="submit" name="submit" class="btn btn-primary ">Add Profile</button>
+      <div class="l">
+      <button type="submit" name="submit" class="btn btn-primary but ">Add Profile</button>
       </div>
     </form>
+    <br>
   </div>
 
 {% endblock %}

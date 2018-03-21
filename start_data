@@ -1,2 +1,3 @@
 sudo service postgresql start 
+/profile/{{ u.id  }}
 git remote set-url 

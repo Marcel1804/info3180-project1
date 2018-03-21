@@ -11,4 +11,7 @@ class AddProfileForm(FlaskForm):
     location=StringField('Location', validators=[DataRequired()])
     bio=TextAreaField('Biography', validators=[DataRequired()])
     photo = FileField('Profile Picture',validators=[FileRequired(),FileAllowed(['jpg','png','Images only!'])])
-
+    
+class UserForm(FlaskForm):
+      username=StringField('Username')
+    
